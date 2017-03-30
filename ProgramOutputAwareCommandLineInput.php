@@ -15,6 +15,10 @@ class ProgramOutputAwareCommandLineInput extends CommandLineInput implements Pro
      */
     protected $output;
 
+
+    /**
+     * @return ProgramOutputAwareCommandLineInput
+     */
     public function setProgramOutput(ProgramOutputInterface $output)
     {
         $this->output = $output;

@@ -37,8 +37,6 @@ The program does nothing but demonstrate how this class works.
 
 
 use CommandLineInput\CommandLineInput;
-use CommandLineInput\ProgramOutputAwareCommandLineInput;
-use Output\ProgramOutput;
 
 
 require_once __DIR__ . "/../boot.php"; // start your autoloaders...
@@ -51,6 +49,7 @@ $input = CommandLineInput::create($argv)
     ->addFlag("f")
     ->addFlag("r")
     ->addFlag("viennois")
+
     ->addOption("p")
     ->addOption("nb-sugars");
 
@@ -62,6 +61,7 @@ a($input->getFlagValue("v")); // true
 a($input->getFlagValue("f")); // true
 a($input->getFlagValue("r")); // false
 a($input->getFlagValue("viennois")); // true
+
 a($input->getOptionValue("p")); // root
 a($input->getOptionValue("nb-sugars")); // 2
 a($input->getParameter(1)); // makecoffee
@@ -69,10 +69,12 @@ a($input->getParameter(2)); // apple
 
 
 // wrong usage
-a($input->getFlagValue("k")); // null, not defined
-a($input->getFlagValue("coca")); // null, not defined
+a($input->getFlagValue("k", null)); // null, not defined
+a($input->getFlagValue("coca", null)); // null, not defined
 a($input->getOptionValue("boot")); // null, not defined
 a($input->getParameter(6)); // null, not defined
+
+
 
 
 
@@ -87,6 +89,7 @@ It explains how command line arguments should be written in order to work with t
  
  
 
+
 This object is an api to access command line options and parameters.
 What's an option and what's a parameter might be redefined on a per concrete class basis.
 
@@ -95,7 +98,7 @@ But if otherwise not specified, here is the conception that should prevail.
 
 
 Options
-------------
+=============
 An option is one of two types:
 
 - flag
@@ -123,18 +126,20 @@ some special chars (like space for instance).
 For instance, --my-option="some value"
 
 
-By default, the value of a flag or option with value is false if not set.
-With flags, the value becomes true if set.
-For options with value, the value becomes the value set in the command line.
+This interface provides methods to access the flags and options present in the command line.
+All access methods allow to define a default value for when the option/flag is not set on the command line.
+By default, when a flag is not set, false is returned.
+
+
 
 
 Parameters
-------------
+=============
 A parameter is any string in the command line that doesn't start with a dash.
 
 So for instance, given the following command line:
 
- php -f myprogram.php makecoffee -v --sugars=2 viennois
+     php -f myprogram.php makecoffee -v --sugars=2 viennois
 
 The parameters are: makecoffee and viennois.
 They should be accessible by their number, starting with 1 (not 0).
@@ -148,10 +153,12 @@ but that's your responsibility to differentiate the role of the parameter in you
 
 
 
-
-
 History Log
 ------------------
+    
+- 1.1.0 -- 2017-03-30
+
+    - make better use of default values
     
 - 1.0.0 -- 2017-03-30
 

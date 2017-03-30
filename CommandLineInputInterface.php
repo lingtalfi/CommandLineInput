@@ -40,9 +40,11 @@ namespace CommandLineInput;
  * For instance, --my-option="some value"
  *
  *
- * By default, the value of a flag or option with value is false if not set.
- * With flags, the value becomes true if set.
- * For options with value, the value becomes the value set in the command line.
+ * This interface provides methods to access the flags and options present in the command line.
+ * All access methods allow to define a default value for when the option/flag is not set on the command line.
+ * By default, when a flag is not set, false is returned.
+ *
+ *
  *
  *
  * Parameters
@@ -64,21 +66,18 @@ namespace CommandLineInput;
 interface CommandLineInputInterface
 {
     /**
-     * returns the flag value (bool), or the $default if the flag was not defined.
+     * returns true if the flag value is set, or the $default otherwise
      */
-    public function getFlagValue($flagName, $default = null);
+    public function getFlagValue($flagName, $default = false);
 
 
     /**
-     * returns the option value, or the $default if the option was not defined.
-     * False is returned if the option is defined but not present.
+     * returns the option value, or the $default otherwise
      */
     public function getOptionValue($optionName, $default = null);
 
     /**
-     * returns the parameter indexed by the given $index.
-     * False is returned if the parameter is defined but not found.
-     * The $default is returned if the parameter is not defined at all.
+     * returns the parameter indexed by the given $index, or the $default otherwise
      */
     public function getParameter($index, $default = null);
 }

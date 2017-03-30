@@ -32,11 +32,17 @@ class CommandLineInput implements CommandLineInputInterface
     private $isPrepared;
 
 
+    private $registeredFlags;
+    private $registeredOptions;
+
+
     public function __construct(array $argv)
     {
         $this->flags = [];
         $this->options = [];
         $this->parameters = [];
+        $this->registeredFlags = [];
+        $this->registeredOptions = [];
 
         //
         $this->argv = $argv;
@@ -55,7 +61,7 @@ class CommandLineInput implements CommandLineInputInterface
      */
     public function addFlag($name)
     {
-        $this->flags[$name] = false;
+        $this->registeredFlags[] = $name;
         return $this;
     }
 
@@ -64,7 +70,7 @@ class CommandLineInput implements CommandLineInputInterface
      */
     public function addOption($name)
     {
-        $this->options[$name] = false;
+        $this->registeredOptions[] = $name;
         return $this;
     }
 
@@ -72,7 +78,7 @@ class CommandLineInput implements CommandLineInputInterface
     //--------------------------------------------
     //
     //--------------------------------------------
-    public function getFlagValue($flagName, $default = null)
+    public function getFlagValue($flagName, $default = false)
     {
         $this->prepare();
         if (array_key_exists($flagName, $this->flags)) {
@@ -102,41 +108,22 @@ class CommandLineInput implements CommandLineInputInterface
     //--------------------------------------------
     //
     //--------------------------------------------
-    protected function error($type, $param = null, $param2 = null)
+    /**
+     * Type can be one of:
+     * - shortFlag
+     * - shortOption
+     * - shortFlagCombined
+     * - longFlag
+     * - longOption
+     *
+     *
+     *
+     */
+    protected function notRegistered($type, $param = null, $param2 = null)
     {
-        $msg = "";
-        switch ($type) {
-            case 'flagNotFound':
-                $msg = "Flag not found: $param";
-                break;
-            case 'combinedFlagNotFound':
-                $msg = "Flag not found: $param (in combined flags -$param2)";
-                break;
-            case 'unknownShortOptionType':
-                $msg = "Unknown short option type: -$param";
-                break;
-//            case 'invalidLongOptionSyntax':
-//                $msg = "Invalid long option syntax: --$param, a long option should contain the equal symbol, with no spaces around";
-//                break;
-            case 'longOptionNotFound':
-                $msg = "Long option not found: $param";
-                break;
-            case 'shortOptionNotFound':
-                $msg = "Short option not found: $param";
-                break;
-            case 'longFlagNotFound':
-                $msg = "Long flag not found: $param";
-                break;
-            default:
-                break;
-        }
-        $this->writeError($msg);
+        // when an option/flag is not registered, by default we ignore it
     }
 
-    protected function writeError($msg)
-    {
-        echo $msg . PHP_EOL;
-    }
 
 
     //--------------------------------------------
@@ -167,17 +154,17 @@ class CommandLineInput implements CommandLineInputInterface
                         // long option
                         $optionName = $p[0];
                         $optionValue = $p[1];
-                        if (array_key_exists($optionName, $this->options)) {
+                        if (in_array($optionName, $this->registeredOptions, true)) {
                             $this->options[$optionName] = $optionValue;
                         } else {
-                            $this->error("longOptionNotFound", $optionName);
+                            $this->notRegistered("longOption", $optionName);
                         }
                     } else {
                         // long flag
-                        if (array_key_exists($option, $this->flags)) {
+                        if (in_array($option, $this->registeredFlags, true)) {
                             $this->flags[$option] = true;
                         } else {
-                            $this->error("longFlagNotFound", $option);
+                            $this->notRegistered("longFlag", $option);
                         }
                     }
                 } else {
@@ -190,33 +177,31 @@ class CommandLineInput implements CommandLineInputInterface
                         // short option
                         $optionName = $p[0];
                         $optionValue = $p[1];
-                        if (array_key_exists($optionName, $this->options)) {
+                        if (true === in_array($optionName, $this->registeredOptions, true)) {
                             $this->options[$optionName] = $optionValue;
                         } else {
-                            $this->error("shortOptionNotFound", $optionName);
+                            $this->notRegistered("shortOption", $optionName);
                         }
                     } else {
                         // short flag or combined one letter flags
                         $len = strlen($option);
                         if (1 === $len) {
                             // short flag
-                            if (array_key_exists($option, $this->flags)) {
+                            if (true === in_array($option, $this->registeredFlags, true)) {
                                 $this->flags[$option] = true;
                             } else {
-                                $this->error("flagNotFound", $option);
+                                $this->notRegistered("shortFlag", $option);
                             }
                         } elseif ($len > 1) {
                             // assuming combined flags
                             $chars = str_split($option);
                             foreach ($chars as $char) {
-                                if (array_key_exists($char, $this->flags)) {
+                                if (true === in_array($char, $this->registeredFlags, true)) {
                                     $this->flags[$char] = true;
                                 } else {
-                                    $this->error("combinedFlagNotFound", $char, $option);
+                                    $this->notRegistered("shortFlagCombined", $option);
                                 }
                             }
-                        } else {
-                            $this->error("unknownShortOptionType", $option);
                         }
                     }
                 }
