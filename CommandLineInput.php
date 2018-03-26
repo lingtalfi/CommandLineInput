@@ -34,7 +34,7 @@ class CommandLineInput implements CommandLineInputInterface
 
     private $registeredFlags;
     private $registeredOptions;
-    private $acceptNotRegistered = false;
+    private $acceptNotRegistered;
 
 
     public function __construct(array $argv)
@@ -44,6 +44,7 @@ class CommandLineInput implements CommandLineInputInterface
         $this->parameters = [];
         $this->registeredFlags = [];
         $this->registeredOptions = [];
+        $this->acceptNotRegistered = false;
 
         //
         $this->argv = $argv;
