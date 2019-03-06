@@ -1,11 +1,11 @@
 <?php
 
 
-namespace CommandLineInput;
+namespace Ling\CommandLineInput;
 
 
-use Output\ProgramOutputAwareInterface;
-use Output\ProgramOutputInterface;
+use Ling\Output\ProgramOutputAwareInterface;
+use Ling\Output\ProgramOutputInterface;
 
 class ProgramOutputAwareCommandLineInput extends CommandLineInput implements ProgramOutputAwareInterface
 {

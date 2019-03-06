@@ -1,7 +1,7 @@
 <?php
 
 
-namespace CommandLineInput;
+namespace Ling\CommandLineInput;
 
 /**
  * This object is an api to access command line options and parameters.

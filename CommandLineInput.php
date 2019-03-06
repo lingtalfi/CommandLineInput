@@ -1,7 +1,7 @@
 <?php
 
 
-namespace CommandLineInput;
+namespace Ling\CommandLineInput;
 
 /**
  * This concrete class implements the standard notation described in the implemented interface.

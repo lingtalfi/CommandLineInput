@@ -19,7 +19,7 @@ Download the code directly, or you can use the [uni tool](https://github.com/lin
 
 ```bash
 cd /my/app
-uni import CommandLineInput
+uni import Ling/CommandLineInput
 ```
 
 
@@ -36,7 +36,7 @@ The program does nothing but demonstrate how this class works.
 <?php
 
 
-use CommandLineInput\CommandLineInput;
+use Ling\CommandLineInput\CommandLineInput;
 
 
 require_once __DIR__ . "/../boot.php"; // start your autoloaders...
