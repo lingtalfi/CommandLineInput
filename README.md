@@ -155,7 +155,11 @@ but that's your responsibility to differentiate the role of the parameter in you
 
 History Log
 ------------------
-    
+
+- 1.2.1 -- 2020-12-04
+
+    - Add lpi-deps.byml file
+
 - 1.2.0 -- 2018-03-24
 
     - add CommandLineInput.setAcceptNotRegistered method
